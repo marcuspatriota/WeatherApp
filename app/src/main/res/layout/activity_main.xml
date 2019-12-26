@@ -28,7 +28,6 @@
         android:ems="10"
         android:hint="City"
         android:inputType="textPersonName"
-        android:text="Buenos Aires"
         app:layout_constraintEnd_toStartOf="@+id/btn_buscar"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />

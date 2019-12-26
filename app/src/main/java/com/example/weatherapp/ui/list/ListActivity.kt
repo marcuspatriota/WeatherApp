@@ -2,26 +2,21 @@ package com.example.weatherapp.ui.list
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.R
 import com.example.weatherapp.api.RetrofitMananger
 import com.example.weatherapp.common.Constants
 import com.example.weatherapp.data.RoomManager
-import com.example.weatherapp.entity.City
-import com.example.weatherapp.entity.Favorite
 import com.example.weatherapp.entity.FindResult
 import com.example.weatherapp.ui.setting.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.row_weather_layout.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,17 +27,22 @@ class ListActivity : AppCompatActivity(), Callback<FindResult> {
     private val adapter: ListAdapter by lazy {
         ListAdapter()
     }
-   private val db : RoomManager? by lazy{
-       RoomManager.getInstance(this)
-   }
+    private val sp : SharedPreferences by lazy {
+        getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
+    }
 
+    private val db : RoomManager? by lazy{
+       RoomManager.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initRecyclerView()
-        btn_buscar.setOnClickListener { getCities()}
+        if (isDeviceConnected()) getAllFavorete()
+
+        btn_buscar.setOnClickListener { if (isDeviceConnected()) getCities()}
 
     }
 
@@ -52,30 +52,39 @@ class ListActivity : AppCompatActivity(), Callback<FindResult> {
     //Retorna a cidades da pesquisa na API
     private fun getCities(){
         if (input_text_main.text.isNullOrBlank()){
-            var list = db?.getCityDao()?.allFavorite()
-            var aux:String = ""
-            if (!list.isNullOrEmpty()){
-                for (i in 0..list.size-1){
-                    if (!aux.isNullOrBlank()){
-                        aux = "$aux,${list[i].id}"
-                    }else{
-                        aux = "${list[i].id}"
-                    }
-                }
-                val call = RetrofitMananger.getWeatherService()
-                    .findByFavorite(aux,Constants.API_KEY, "metric")
-                progressBar.visibility = View.VISIBLE
-                call.enqueue(this)
-            }
+            getAllFavorete()
         }else{
             val call = RetrofitMananger.getWeatherService()
-                .find(input_text_main.text.toString(),Constants.API_KEY)
+                .find(input_text_main.text.toString(),Constants.API_KEY,getLang(), getUnit())
             progressBar.visibility = View.VISIBLE
             call.enqueue(this)
         }
 
     }
+    private fun getAllFavorete(){
+        var list = db?.getCityDao()?.allFavorite()
+        var aux:String = ""
+        if (!list.isNullOrEmpty()){
+            for (i in 0..list.size-1){
+                if (!aux.isNullOrBlank()){
+                    aux = "$aux,${list[i].id}"
+                }else{
+                    aux = "${list[i].id}"
+                }
+            }
+            val call = RetrofitMananger.getWeatherService()
+                .findByFavorite(aux,Constants.API_KEY,getLang(), getUnit())
+            progressBar.visibility = View.VISIBLE
+            call.enqueue(this)
+        }
+    }
 
+    private fun getUnit():String{
+        return if (sp.getBoolean(Constants.PREFS_TEMP, true)) "metric" else "imperial"
+    }
+    private fun getLang():String{
+        return if (sp.getBoolean(Constants.PREFS_LANG, true)) "en" else "pt"
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_settings, menu)
@@ -112,24 +121,4 @@ class ListActivity : AppCompatActivity(), Callback<FindResult> {
         }
     }
 }
-//class reponsavel por rodar processo em background
-class InsertFavoriteAsync(context: Context)
-    :AsyncTask<City, Void,Boolean>(){
-    private val db = RoomManager.getInstance(context)
 
-    override fun doInBackground(vararg params: City?): Boolean {
-        val paramFavorite = Favorite(params[0]!!.id,params[0]!!.name)
-        var favorite = db?.getCityDao()?.favoriteById(paramFavorite.id)
-        return if (favorite != null){
-            db?.getCityDao()?.deleteFavorite(paramFavorite)
-            Log.d("InsertFavoriteAsync", "Registro já exite")
-             false
-        }else{
-            db?.getCityDao()?.insertFavorite(paramFavorite)
-            Log.d("InsertFavoriteAsync", "Registro inserido")
-             true
-        }
-
-    }
-
-}

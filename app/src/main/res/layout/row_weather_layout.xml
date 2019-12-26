@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="C"
+        android:text="ºC"
         app:layout_constraintStart_toEndOf="@+id/txtTemp"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="Buenos Aires"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
         app:layout_constraintStart_toEndOf="@+id/txtUnit"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,8 +65,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="TextView"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/txtUnit"
         app:layout_constraintTop_toBottomOf="@+id/txtCity" />
 
@@ -73,8 +76,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="TextView"
+        android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/txtUnit"
         app:layout_constraintTop_toBottomOf="@+id/txtSituacao" />
 
