@@ -32,33 +32,6 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         list?.let {
-            /**
-            holder.itemView.btnFavorite.setOnClickListener{btnFan ->
-                val db = RoomManager.getInstance(holder.itemView.context)
-                val paramFavorite = Favorite(it[position].id,it[position].name)
-                var favorite = db?.getCityDao()?.favoriteById(paramFavorite.id)
-                if (favorite != null){
-                    db?.getCityDao()?.deleteFavorite(paramFavorite)
-                    val drawable = ContextCompat.getDrawable(holder.itemView.context,android.R.drawable.btn_star_big_on)
-                    holder.itemView.btnFavorite.setImageDrawable(drawable)
-                    Log.d("InsertFavoriteAsync", "Registro já exite")
-                }else{
-                    db?.getCityDao()?.insertFavorite(paramFavorite)
-                    val drawable = ContextCompat.getDrawable(holder.itemView.context,android.R.drawable.btn_star_big_off)
-                    holder.itemView.btnFavorite.setImageDrawable(drawable)
-                    Log.d("InsertFavoriteAsync", "Registro inserido")
-                    notifyDataSetChanged()
-                }
-
-                if (InsertFavoriteAsync(holder.itemView.context).execute(it[position]).get()){
-
-                }else{
-                    val drawable = ContextCompat.getDrawable(holder.itemView.context,android.R.drawable.btn_star_big_off)
-                    holder.itemView.btnFavorite.setImageDrawable(drawable)
-                    notifyDataSetChanged()
-                }
-
-            }*/
             holder.bind(it[position])
         }
 
@@ -92,14 +65,14 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
                 favorite = db?.getCityDao()?.favoriteById(paramFavorite.id)
                 if (favorite != null){
                     db?.getCityDao()?.deleteFavorite(paramFavorite)
-                    val drawable = ContextCompat.getDrawable(itemView.context,android.R.drawable.btn_star_big_on)
+                    val drawable = ContextCompat.getDrawable(itemView.context,android.R.drawable.btn_star_big_off)
                    itemView.btnFavorite.setImageDrawable(drawable)
-                    Log.d("InsertFavoriteAsync", "Registro já exite")
+                    Log.d("InsertFavoriteAsync", "Registro já exite : ${paramFavorite.id}")
                 }else{
                     db?.getCityDao()?.insertFavorite(paramFavorite)
-                    val drawable = ContextCompat.getDrawable(itemView.context,android.R.drawable.btn_star_big_off)
+                    val drawable = ContextCompat.getDrawable(itemView.context,android.R.drawable.btn_star_big_on)
                     itemView.btnFavorite.setImageDrawable(drawable)
-                    Log.d("InsertFavoriteAsync", "Registro inserido")
+                    Log.d("InsertFavoriteAsync", "Registro inserido: ${paramFavorite.id}")
                 }
             }
 

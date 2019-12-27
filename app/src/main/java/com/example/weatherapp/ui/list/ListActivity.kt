@@ -66,12 +66,15 @@ class ListActivity : AppCompatActivity(), Callback<FindResult> {
         var aux:String = ""
         if (!list.isNullOrEmpty()){
             for (i in 0..list.size-1){
+                Log.d("Patriota2", "${list[i].id}")
                 if (!aux.isNullOrBlank()){
                     aux = "$aux,${list[i].id}"
                 }else{
                     aux = "${list[i].id}"
                 }
+
             }
+            Log.d("Patriota2", "Aux: $aux")
             val call = RetrofitMananger.getWeatherService()
                 .findByFavorite(aux,Constants.API_KEY,getLang(), getUnit())
             progressBar.visibility = View.VISIBLE
